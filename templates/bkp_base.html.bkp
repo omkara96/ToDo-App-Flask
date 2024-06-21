@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Flask App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .todo-card {
+            border: 2px solid #333;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 300px; /* Adjust as per your design */
+            border-radius: 10px;
+
+        }
+    
+    </style>
+
+</head>
+<body>
+
+
+    <nav class="navbar navbar-default">
+
+        <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand text-primary" href="#">ToDo List</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="">Home</a></li>
+                {% if current_user.is_authenticated %}
+                    {% if session.current_role in ['admin', 'Super RO', 'OP User'] %}
+                        <li><a href="">Users</a></li>
+                        <li><a href="">Roles</a></li>
+                    {% endif %}
+                    <li><a href="{{url_for('completed_todos')}}">Completed ToDo's</a></li>
+                {% endif %}
+            </ul>
+            {% if current_user.is_authenticated %}
+            <p class="navbar-text navbar-right">
+                <i class="fa fa-user"></i> Logged in as <strong>{{current_user.first_name}}</strong> ({{ current_user.role }})
+                <a href="{{url_for('logout')}}" class="btn btn-sm btn-logout"><i class="fa fa-sign-out"></i> Logout</a>
+            </p>
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{url_for('signin')}}"><i class="fa fa-sign-in"></i> Login</a></li>
+                <li><a href="{{url_for('signup')}}"><i class="fa fa-user-plus"></i> Signup</a></li>
+            </ul>
+            {% endif %}
+        </div>
+        
+    </nav>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash alert alert-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+    <footer>
+        <div class="container-fluid">&copy; 2024 Omkar Varma</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+</body>
+</html>

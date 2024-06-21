@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}View Todo{% endblock %}
+{% block content %}
+
+<div class="container my-3">
+    <h1 class="text-primary">{{ todo.todo_title }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Description:</strong> {{ todo.todo_desc }}</p>
+            <p><strong>Created On:</strong> {{ todo.created_on.strftime("%Y-%m-%d %H:%M:%S") }}</p>
+            <p><strong>Estimated Completion Time:</strong> 
+                {% if todo.expected_completion_time %}
+                    {{ todo.expected_completion_time.strftime("%Y-%m-%d %H:%M:%S") }}
+                {% else %}
+                    Not specified
+                {% endif %}
+            </p>
+            <p><strong>Remaining Time:</strong> {{ todo.remaining_time }} minutes</p>
+            <p><strong>Overdue:</strong> {{ todo.overdue }} minutes</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+</html>

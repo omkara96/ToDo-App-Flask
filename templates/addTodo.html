@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Add Todo...{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="text-primary">Add Todo: {{ todonm }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="/addTodo">
+                <div class="form-group">
+                    <label for="todonm">Todo Task Name:</label>
+                    <input type="text" class="form-control" id="todonm" name="todonm" required value="{{ todonm }}">
+                </div>
+                <div class="form-group">
+                    <label for="taskdesc">Task Description:</label>
+                    <textarea class="form-control" name="tododesc" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskdesc">Target Date Time:</label>
+                    <input type="datetime-local" class="form-control" name="timetocmplt" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskdesc">Creating On:</label>
+                    <input type="text" class="form-control" name="'crtdttm" readonly value="{{ datetime }}">
+                </div>
+                <button type="submit" class="btn btn-primary" style="background-color:green">Add Task</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+</html>

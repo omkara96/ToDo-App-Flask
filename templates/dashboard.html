@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="container my-3">
+    <h1 class="text-primary">Add Todo's...</h1>
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ url_for('addtodo') }}" method="POST">
+                <label for="todoname">Todo Task Name:</label>
+                <input type="text" name="todonm" required>
+                <button type="submit" class="btn btn-primary" style="background-color:green">Add Task</button>
+            </form>
+        </div>
+    </div>
+    <hr>
+
+    <div class="container my-3">
+        <h1 class="text-primary">Your Todos</h1>
+
+        <form action="{{ url_for('dashboard') }}" method="GET" class="my-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search todos..." value="{{ search_query }}">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <section id="open-todos">
+            <h2 class="text-info">Open Todos</h2>
+            {% if todos|selectattr("iscompleted", "equalto", False)|list %}
+            <div class="row">
+                {% for todo in todos %}
+                    {% if not todo.iscompleted %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card todo-card">
+                            <div class="card-body" style="height: 250px; overflow: hidden;">
+                                <h5 class="card-title"><strong>Task Title:</strong> {{ todo.todo_title }}</h5>
+                                <p class="card-text"><strong>Task Description:</strong> {{ todo.todo_desc|truncate(200) }}</p>
+                                <p class="card-text"><strong>Created On:</strong>
+                                    {% if todo.created_on %}
+                                        {{ todo.created_on.strftime("%Y-%m-%d %H:%M:%S") }}
+                                    {% else %}
+                                        Not specified
+                                    {% endif %}
+                                </p>
+                                <p class="card-text"><strong>Work Time:</strong> {{ todo.work_time }} minutes</p>
+                                <p class="card-text"><strong>Target Completion:</strong>
+                                    {% if todo.expected_completion_time %}
+                                        {{ todo.expected_completion_time.strftime("%Y-%m-%d %H:%M:%S") }}
+                                    {% else %}
+                                        Not specified
+                                    {% endif %}
+                                </p>
+                                <p class="card-text">
+                                    <strong>Overdue:</strong>
+                                    {% if todo.overdue %}
+                                        {{ todo.overdue }} minutes
+                                    {% else %}
+                                        Not specified
+                                    {% endif %}
+                                </p>
+                                <a href="{{ url_for('view_todo', todo_id=todo.id) }}" class="btn btn-info">View</a>
+                                <a href="{{ url_for('closetodo', todo_id=todo.id) }}" class="btn btn-success">Mark as Complete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% else %}
+                <p class="text-center">No open todos. Add some!</p>
+            {% endif %}
+        </section>
+
+        <hr>
+
+        <section id="completed-todos">
+            <h2 class="text-success">Recently Completed Todos</h2>
+            {% if todos|selectattr("iscompleted", "equalto", True)|list %}
+            <div class="row">
+                {% for todo in todos %}
+                    {% if todo.iscompleted %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card todo-card">
+                            <div class="card-body" style="height: 250px; overflow: hidden;">
+                                <h5 class="card-title"><strong>Task Title:</strong> {{ todo.todo_title }}</h5>
+                                <p class="card-text"><strong>Task Description:</strong> {{ todo.todo_desc|truncate(200) }}</p>
+                                <p class="card-text"><strong>Completed On:</strong>
+                                    {% if todo.completed_on %}
+                                        {{ todo.completed_on.strftime("%Y-%m-%d %H:%M:%S") }}
+                                    {% else %}
+                                        Not specified
+                                    {% endif %}
+                                </p>
+                                <a href="{{ url_for('view_todo', todo_id=todo.id) }}" class="btn btn-info">View</a>
+                                <a href="{{ url_for('delete_todo', todo_id=todo.id) }}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <a href="{{ url_for('completed_todos') }}" class="btn btn-secondary">View All Completed Todos</a>
+            {% else %}
+                <p class="text-center">No completed todos.</p>
+            {% endif %}
+        </section>
+    </div>
+</div>
+
+{% endblock %}
+</html>
